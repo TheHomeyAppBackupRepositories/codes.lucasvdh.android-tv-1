@@ -5,12 +5,12 @@ const homey_1 = require("homey");
 class Remote extends homey_1.Device {
     async onInit() {
         this.log('Device has been initialized');
-        await this.setUnavailable();
+        // Migrate cert to store for older devices
+        if (!this.getStoreKeys().includes('cert')) {
+            await this.setStoreValue('cert', this.getData().cert);
+        }
         // Force immediate production check
         this.initializeClient();
-    }
-    initializeClient() {
-        throw new Error("Not implemented");
     }
 }
 exports.Remote = Remote;

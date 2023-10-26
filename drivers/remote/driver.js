@@ -73,7 +73,7 @@ class RemoteDriver extends homey_1.Driver {
             this.log('Pincode submitted', code.join(''));
             const pairingResult = await pairingClient.sendCode(code.join(''));
             if (pairingResult) {
-                pairingDevice.data.cert = await pairingClient.getCertificate();
+                pairingDevice.store.cert = await pairingClient.getCertificate();
                 session.showView('add_device');
             }
             else {
@@ -88,15 +88,65 @@ class RemoteDriver extends homey_1.Driver {
             return pairingDevice;
         });
     }
+    async onRepair(session, repairingDevice) {
+        // Argument session is a PairSocket, similar to Driver.onPair
+        // Argument device is a Homey.Device that's being repaired
+        this.log('Repairing device', repairingDevice.getName());
+        const pairingClient = this.getPairingClientByDevice({
+            name: repairingDevice.getName(),
+            data: repairingDevice.getData(),
+            store: {},
+            settings: repairingDevice.getSettings()
+        });
+        session.setHandler('showView', async (view) => {
+            this.log('Show view', view);
+            if (view === 'start_repair') {
+                console.log('START PAIRING');
+                pairingClient.on('secret', () => {
+                    this.log('Pairing client started, show authenticate view');
+                    session.showView('authenticate');
+                });
+                await pairingClient.start();
+            }
+        });
+        session.setHandler('pincode', async (code) => {
+            if (pairingClient === null) {
+                this.error('Pairing client should not be null');
+                return;
+            }
+            if (repairingDevice === null) {
+                this.error('Pairing device should not be null');
+                return;
+            }
+            this.log('Pincode submitted', code.join(''));
+            const pairingResult = await pairingClient.sendCode(code.join(''));
+            if (pairingResult) {
+                await repairingDevice.setStoreValue('cert', await pairingClient.getCertificate());
+                session.done();
+            }
+            else {
+                session.showView('authenticate');
+            }
+            return pairingResult;
+        });
+        session.setHandler("disconnect", async () => {
+            // Cleanup
+        });
+    }
     getPairingClientByDevice(device) {
-        return new client_1.default(device.settings.ip, device.data.cert);
+        return new client_1.default(device.settings.ip, device.store.cert);
     }
     getDeviceByDiscoveryResult(discoveryResult) {
         return {
             name: this.getNameByMDNSDiscoveryResult(discoveryResult),
             data: {
                 id: discoveryResult.id,
-                cert: {}
+            },
+            store: {
+                cert: {
+                    key: undefined,
+                    cert: undefined,
+                }
             },
             settings: {
                 ip: discoveryResult.address

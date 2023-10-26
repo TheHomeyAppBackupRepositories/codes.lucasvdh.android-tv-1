@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "codes.lucasvdh.android-tv",
-  "version": "0.3.0",
+  "version": "0.8.0",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "brandColor": "#3DDC84",
@@ -151,6 +151,65 @@
     ],
     "actions": [
       {
+        "id": "long_press_key",
+        "title": {
+          "en": "Long press a key",
+          "nl": "Druk lang op een toets",
+          "de": "Lange Taste drücken",
+          "fr": "Appuyer longuement sur une touche",
+          "it": "Premi a lungo un tasto",
+          "sv": "Tryck länge på en knapp",
+          "no": "Trykk og hold inne en tast",
+          "es": "Mantener pulsada una tecla",
+          "da": "Tryk længe på en tast",
+          "pl": "Przytrzymaj klawisz"
+        },
+        "titleFormatted": {
+          "en": "Press [[option]] key for [[seconds]] seconds",
+          "nl": "Druk [[seconds]] seconden de [[option]] toets in",
+          "de": "Drücke die [[option]]-Taste für [[seconds]] Sekunden",
+          "fr": "Appuyer sur la touche [[option]] pendant [[seconds]] secondes",
+          "it": "Premi il tasto [[option]] per [[seconds]] secondi",
+          "sv": "Tryck på [[option]]-knappen i [[seconds]] sekunder",
+          "no": "Trykk [[option]]-tasten i [[seconds]] sekunder",
+          "es": "Pulsa la tecla [[option]] durante [[seconds]] segundos",
+          "da": "Tryk på [[option]]-tasten i [[seconds]] sekunder",
+          "pl": "Przytrzymaj klawisz [[option]] przez [[seconds]] sekund"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=remote"
+          },
+          {
+            "name": "option",
+            "type": "autocomplete"
+          },
+          {
+            "name": "seconds",
+            "type": "number",
+            "title": {
+              "en": "seconds",
+              "nl": "seconden",
+              "de": "Sekunden",
+              "fr": "secondes",
+              "it": "secondi",
+              "sv": "sekunder",
+              "no": "sekunder",
+              "es": "segundos",
+              "da": "sekunder",
+              "pl": "sekundy"
+            },
+            "placeholder": {
+              "en": "1.5"
+            },
+            "min": 0.1,
+            "step": 0.1
+          }
+        ]
+      },
+      {
         "highlight": true,
         "id": "open_application",
         "title": {
@@ -166,25 +225,93 @@
           "pl": "Otwórz aplikację"
         },
         "titleFormatted": {
-          "en": "Open app [[app]]",
-          "nl": "Open app [[app]]",
-          "de": "Öffne App [[app]]",
-          "fr": "Ouvrir l'application [[app]]",
-          "it": "Apri app [[app]]",
-          "sv": "Öppna app [[app]]",
-          "no": "Åpne app [[app]]",
-          "es": "Abrir aplicación [[app]]",
-          "da": "Åben app [[app]]",
-          "pl": "Otwórz aplikację [[app]]"
+          "en": "Open app [[app_name]][[app_link]]",
+          "nl": "Open app [[app_name]][[app_link]]",
+          "de": "Öffne App [[app_name]][[app_link]]",
+          "fr": "Ouvrir l'application [[app_name]][[app_link]]",
+          "it": "Apri app [[app_name]][[app_link]]",
+          "sv": "Öppna app [[app_name]][[app_link]]",
+          "no": "Åpne app [[app_name]][[app_link]]",
+          "es": "Abrir aplicación [[app_name]][[app_link]]",
+          "da": "Åben app [[app_name]][[app_link]]",
+          "pl": "Otwórz aplikację [[app_name]][[app_link]]"
         },
         "args": [
           {
             "name": "device",
             "type": "device",
-            "filter": "driver_id=philips-jointspace"
+            "filter": "driver_id=remote"
           },
           {
-            "name": "app",
+            "name": "app_name",
+            "title": {
+              "en": "app name",
+              "nl": "app naam",
+              "de": "App-Name",
+              "fr": "Nom de l'application",
+              "it": "Nome dell'applicazione",
+              "sv": "App-namn",
+              "no": "Appnavn",
+              "es": "Nombre de la aplicación",
+              "da": "App-navn",
+              "pl": "Nazwa aplikacji"
+            },
+            "type": "text",
+            "required": false
+          },
+          {
+            "name": "app_link",
+            "title": {
+              "en": "app link",
+              "nl": "app link",
+              "de": "App-Link",
+              "fr": "Lien de l'application",
+              "it": "Link dell'applicazione",
+              "sv": "App-länk",
+              "no": "Applink",
+              "es": "Enlace de la aplicación",
+              "da": "App-link",
+              "pl": "Link do aplikacji"
+            },
+            "type": "text",
+            "required": false
+          }
+        ]
+      },
+      {
+        "id": "press_key",
+        "title": {
+          "en": "Press a key",
+          "nl": "Druk op een knop",
+          "de": "Drücken Sie eine Taste",
+          "fr": "Appuyez sur une touche",
+          "it": "Premi un tasto",
+          "sv": "Tryck på en knapp",
+          "no": "Trykk på en tast",
+          "es": "Presione una tecla",
+          "da": "Tryk på en tast",
+          "pl": "Naciśnij klawisz"
+        },
+        "titleFormatted": {
+          "en": "Press key [[option]]",
+          "nl": "Druk op toets [[option]]",
+          "de": "Drücken Sie die Taste [[option]]",
+          "fr": "Appuyez sur la touche [[option]]",
+          "it": "Premi il tasto [[option]]",
+          "sv": "Tryck på knappen [[option]]",
+          "no": "Trykk på tasten [[option]]",
+          "es": "Presione la tecla [[option]]",
+          "da": "Tryk på tasten [[option]]",
+          "pl": "Naciśnij klawisz [[option]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=remote"
+          },
+          {
+            "name": "option",
             "type": "autocomplete"
           }
         ]
@@ -282,44 +409,6 @@
             ]
           }
         ]
-      },
-      {
-        "id": "send_key",
-        "title": {
-          "en": "Send a key",
-          "nl": "Stuur een knop",
-          "de": "Sende eine Taste",
-          "fr": "Envoyer une touche",
-          "it": "Invia un tasto",
-          "sv": "Skicka en tangent",
-          "no": "Send en tast",
-          "es": "Enviar una tecla",
-          "da": "Send en tast",
-          "pl": "Wyślij klawisz"
-        },
-        "titleFormatted": {
-          "en": "Send key [[option]]",
-          "nl": "Stuur knop [[option]]",
-          "de": "Sende Taste [[option]]",
-          "fr": "Envoyer la touche [[option]]",
-          "it": "Invia tasto [[option]]",
-          "sv": "Skicka tangent [[option]]",
-          "no": "Send tast [[option]]",
-          "es": "Enviar tecla [[option]]",
-          "da": "Send tast [[option]]",
-          "pl": "Wyślij klawisz [[option]]"
-        },
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "filter": "driver_id=remote"
-          },
-          {
-            "name": "option",
-            "type": "autocomplete"
-          }
-        ]
       }
     ]
   },
@@ -337,6 +426,9 @@
         "da": "Fjernbetjening",
         "pl": "Pilot zdalnego sterowania"
       },
+      "connectivity": [
+        "lan"
+      ],
       "pair": [
         {
           "id": "discover",
@@ -411,6 +503,47 @@
           "id": "add_my_device"
         }
       ],
+      "repair": [
+        {
+          "id": "start_repair",
+          "template": "loading"
+        },
+        {
+          "id": "authenticate",
+          "template": "pincode",
+          "options": {
+            "title": {
+              "en": "Pincode",
+              "nl": "Pincode",
+              "de": "Pin-Code",
+              "fr": "Code Pin",
+              "it": "Codice Pin",
+              "sv": "Pin-kod",
+              "no": "Pinkode",
+              "es": "Código PIN",
+              "da": "Pin-kode",
+              "pl": "Kod PIN"
+            },
+            "hint": {
+              "en": "Enter the code displayed on the TV",
+              "nl": "Vul de code in die op de TV wordt weergegeven",
+              "de": "Geben Sie den auf dem Fernseher angezeigten Code ein",
+              "fr": "Entrez le code affiché sur la télévision",
+              "it": "Inserisci il codice visualizzato sul televisore",
+              "sv": "Ange koden som visas på TV:n",
+              "no": "Skriv inn koden som vises på TV-en",
+              "es": "Ingrese el código que se muestra en la televisión",
+              "da": "Indtast koden, der vises på tv'et",
+              "pl": "Wprowadź kod wyświetlany na telewizorze"
+            },
+            "type": "text",
+            "length": 6
+          },
+          "navigation": {
+            "prev": "discover"
+          }
+        }
+      ],
       "images": {
         "large": "/drivers/remote/assets/images/large.png",
         "small": "/drivers/remote/assets/images/small.png"
@@ -441,6 +574,8 @@
         "key_previous",
         "key_next",
         "key_watch_tv",
+        "key_channel_up",
+        "key_channel_down",
         "key_source"
       ],
       "id": "remote",
@@ -496,11 +631,59 @@
       "uiQuickAction": true,
       "icon": "assets/capabilities/back.svg"
     },
+    "key_channel_down": {
+      "type": "boolean",
+      "title": {
+        "en": "Channel down",
+        "nl": "Kanaal omlaag",
+        "de": "Kanal runter",
+        "fr": "Chaîne en baisse",
+        "it": "Canale giù",
+        "sv": "Kanal ner",
+        "no": "Kanal ned",
+        "es": "Canal abajo",
+        "da": "Kanal ned",
+        "pl": "Kanał w dół"
+      },
+      "getable": false,
+      "setable": true,
+      "uiComponent": "button",
+      "uiQuickAction": true,
+      "icon": "assets/capabilities/channel_down.svg"
+    },
+    "key_channel_up": {
+      "type": "boolean",
+      "title": {
+        "en": "Channel up",
+        "nl": "Kanaal omhoog",
+        "de": "Kanal hoch",
+        "fr": "Chaîne en hausse",
+        "it": "Canale su",
+        "sv": "Kanal upp",
+        "no": "Kanal opp",
+        "es": "Canal arriba",
+        "da": "Kanal op",
+        "pl": "Kanał w górę"
+      },
+      "getable": false,
+      "setable": true,
+      "uiComponent": "button",
+      "uiQuickAction": true,
+      "icon": "assets/capabilities/channel_up.svg"
+    },
     "key_confirm": {
       "type": "boolean",
       "title": {
         "en": "Confirm",
-        "nl": "Bevestig"
+        "nl": "Bevestig",
+        "de": "Bestätigen",
+        "fr": "Confirmer",
+        "it": "Conferma",
+        "sv": "Bekräfta",
+        "no": "Bekreft",
+        "es": "Confirmar",
+        "da": "Bekræft",
+        "pl": "Potwierdź"
       },
       "getable": false,
       "setable": true,
@@ -512,7 +695,15 @@
       "type": "boolean",
       "title": {
         "en": "Cursor down",
-        "nl": "Wijzer beneden"
+        "nl": "Wijzer beneden",
+        "de": "Cursor nach unten",
+        "fr": "Curseur vers le bas",
+        "it": "Cursore giù",
+        "sv": "Cursor nedåt",
+        "no": "Pil ned",
+        "es": "Cursor abajo",
+        "da": "Cursor ned",
+        "pl": "Kursor w dół"
       },
       "getable": false,
       "setable": true,
@@ -524,7 +715,15 @@
       "type": "boolean",
       "title": {
         "en": "Cursor left",
-        "nl": "Wijzer links"
+        "nl": "Wijzer links",
+        "de": "Cursor nach links",
+        "fr": "Curseur à gauche",
+        "it": "Cursore a sinistra",
+        "sv": "Cursor vänster",
+        "no": "Pil til venstre",
+        "es": "Cursor izquierda",
+        "da": "Cursor til venstre",
+        "pl": "Kursor w lewo"
       },
       "getable": false,
       "setable": true,
@@ -536,7 +735,15 @@
       "type": "boolean",
       "title": {
         "en": "Cursor right",
-        "nl": "Wijzer rechts"
+        "nl": "Wijzer rechts",
+        "de": "Cursor nach rechts",
+        "fr": "Curseur à droite",
+        "it": "Cursore a destra",
+        "sv": "Cursor höger",
+        "no": "Pil til høyre",
+        "es": "Cursor derecha",
+        "da": "Cursor til højre",
+        "pl": "Kursor w prawo"
       },
       "getable": false,
       "setable": true,
@@ -548,7 +755,15 @@
       "type": "boolean",
       "title": {
         "en": "Cursor up",
-        "nl": "Wijzer omhoog"
+        "nl": "Wijzer omhoog",
+        "de": "Cursor nach oben",
+        "fr": "Curseur vers le haut",
+        "it": "Cursore su",
+        "sv": "Cursor uppåt",
+        "no": "Pil opp",
+        "es": "Cursor arriba",
+        "da": "Cursor op",
+        "pl": "Kursor w górę"
       },
       "getable": false,
       "setable": true,
@@ -560,7 +775,15 @@
       "type": "boolean",
       "title": {
         "en": "Fast forward",
-        "nl": "Doorspoelen"
+        "nl": "Doorspoelen",
+        "de": "Vorspulen",
+        "fr": "Avance rapide",
+        "it": "Avanzamento veloce",
+        "sv": "Snabbspola framåt",
+        "no": "Spol raskt fremover",
+        "es": "Avance rápido",
+        "da": "Spol hurtigt fremad",
+        "pl": "Przewiń do przodu"
       },
       "getable": false,
       "setable": true,
@@ -572,7 +795,15 @@
       "type": "boolean",
       "title": {
         "en": "Home",
-        "nl": "Home"
+        "nl": "Home",
+        "de": "Startseite",
+        "fr": "Accueil",
+        "it": "Home",
+        "sv": "Hem",
+        "no": "Hjem",
+        "es": "Inicio",
+        "da": "Hjem",
+        "pl": "Strona główna"
       },
       "getable": false,
       "setable": true,
@@ -584,7 +815,15 @@
       "type": "boolean",
       "title": {
         "en": "Next",
-        "nl": "Volgende"
+        "nl": "Volgende",
+        "de": "Nächste",
+        "fr": "Suivant",
+        "it": "Avanti",
+        "sv": "Nästa",
+        "no": "Neste",
+        "es": "Siguiente",
+        "da": "Næste",
+        "pl": "Następny"
       },
       "getable": false,
       "setable": true,
@@ -596,7 +835,15 @@
       "type": "boolean",
       "title": {
         "en": "Pause",
-        "nl": "Pauze"
+        "nl": "Pauze",
+        "de": "Pause",
+        "fr": "Pause",
+        "it": "Pausa",
+        "sv": "Paus",
+        "no": "Pause",
+        "es": "Pausa",
+        "da": "Pause",
+        "pl": "Pauza"
       },
       "getable": false,
       "setable": true,
@@ -608,7 +855,15 @@
       "type": "boolean",
       "title": {
         "en": "Play",
-        "nl": "Play"
+        "nl": "Play",
+        "de": "Abspielen",
+        "fr": "Lire",
+        "it": "Riproduci",
+        "sv": "Spela",
+        "no": "Spill",
+        "es": "Reproducir",
+        "da": "Afspil",
+        "pl": "Odtwórz"
       },
       "getable": false,
       "setable": true,
@@ -620,7 +875,15 @@
       "type": "boolean",
       "title": {
         "en": "Previous",
-        "nl": "Vorige"
+        "nl": "Vorige",
+        "de": "Vorherige",
+        "fr": "Précédent",
+        "it": "Precedente",
+        "sv": "Föregående",
+        "no": "Forrige",
+        "es": "Anterior",
+        "da": "Forrige",
+        "pl": "Poprzedni"
       },
       "getable": false,
       "setable": true,
@@ -632,7 +895,15 @@
       "type": "boolean",
       "title": {
         "en": "Rewind",
-        "nl": "Terugspoelen"
+        "nl": "Terugspoelen",
+        "de": "Zurückspulen",
+        "fr": "Rembobiner",
+        "it": "Riavvolgere",
+        "sv": "Spola tillbaka",
+        "no": "Spol tilbake",
+        "es": "Rebobinar",
+        "da": "Spol tilbage",
+        "pl": "Cofnij"
       },
       "getable": false,
       "setable": true,
@@ -644,7 +915,15 @@
       "type": "boolean",
       "title": {
         "en": "Source",
-        "nl": "Source"
+        "nl": "Bron",
+        "de": "Quelle",
+        "fr": "Source",
+        "it": "Sorgente",
+        "sv": "Källa",
+        "no": "Kilde",
+        "es": "Fuente",
+        "da": "Kilde",
+        "pl": "Źródło"
       },
       "getable": false,
       "setable": true,
@@ -656,7 +935,15 @@
       "type": "boolean",
       "title": {
         "en": "Stop",
-        "nl": "Stop"
+        "nl": "Stop",
+        "de": "Anhalten",
+        "fr": "Arrêter",
+        "it": "Fermare",
+        "sv": "Stoppa",
+        "no": "Stopp",
+        "es": "Detener",
+        "da": "Stop",
+        "pl": "Zatrzymaj"
       },
       "getable": false,
       "setable": true,
@@ -668,7 +955,15 @@
       "type": "boolean",
       "title": {
         "en": "Ambilight toggle",
-        "nl": "Ambilight aan/uit"
+        "nl": "Ambilight aan/uit",
+        "de": "Ambilight umschalten",
+        "fr": "Activer/Désactiver Ambilight",
+        "it": "Attiva/Disattiva Ambilight",
+        "sv": "Ambilight växla",
+        "no": "Ambilight på/av",
+        "es": "Alternar Ambilight",
+        "da": "Ambilight tænd/sluk",
+        "pl": "Przełącz Ambilight"
       },
       "getable": false,
       "setable": true,
@@ -680,7 +975,15 @@
       "type": "boolean",
       "title": {
         "en": "Subtitle on/off",
-        "nl": "Ondertiteling aan/uit"
+        "nl": "Ondertiteling aan/uit",
+        "de": "Untertitel ein/aus",
+        "fr": "Sous-titres activés/désactivés",
+        "it": "Sottotitoli on/off",
+        "sv": "Textning på/av",
+        "no": "Teksting på/av",
+        "es": "Subtítulos activados/desactivados",
+        "da": "Undertekster til/fra",
+        "pl": "Napisy włącz/wyłącz"
       },
       "getable": false,
       "setable": true,
@@ -692,7 +995,15 @@
       "type": "boolean",
       "title": {
         "en": "Watch TV",
-        "nl": "TV kijken"
+        "nl": "TV kijken",
+        "de": "Fernsehen",
+        "fr": "Regarder la télévision",
+        "it": "Guarda la TV",
+        "sv": "Titta på TV",
+        "no": "Se på TV",
+        "es": "Ver la televisión",
+        "da": "Se TV",
+        "pl": "Oglądaj telewizję"
       },
       "getable": false,
       "setable": true,
@@ -704,7 +1015,15 @@
       "type": "number",
       "title": {
         "en": "Volume",
-        "nl": "Volume"
+        "nl": "Volume",
+        "de": "Lautstärke",
+        "fr": "Volume",
+        "it": "Volume",
+        "sv": "Volym",
+        "no": "Volum",
+        "es": "Volumen",
+        "da": "Volumen",
+        "pl": "Głośność"
       },
       "icon": "/assets/capabilities/measure_volume.svg",
       "uiComponent": "sensor",

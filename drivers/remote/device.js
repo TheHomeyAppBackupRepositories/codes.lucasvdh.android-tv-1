@@ -53,6 +53,8 @@ class RemoteDevice extends remote_1.Remote {
         'key_cursor_up',
         'key_cursor_right',
         'key_cursor_down',
+        'key_channel_up',
+        'key_channel_down',
         // 'key_info',
         // 'key_digit_1',
         // 'key_digit_2',
@@ -76,19 +78,35 @@ class RemoteDevice extends remote_1.Remote {
     ];
     CAPABILITIES_SET_DEBOUNCE = 100;
     async initializeClient() {
-        const data = this.getData();
-        const settings = this.getSettings();
-        this.client = new client_1.default(settings.ip, data.cert);
-        await this.client.start();
-        this.client.on('ready', () => {
-            this.log("Client has been initialized");
-            this.setAvailable();
-        });
-        await this.registerClientListeners();
-        this.log('Client listeners have been registered');
-        await this.registerCapabilityListeners();
-        this.log('Capability listeners have been registered');
-        this.fixCapabilities();
+        try {
+            const store = this.getStore();
+            const settings = this.getSettings();
+            this.client = new client_1.default(settings.ip, store.cert);
+            this.client.on('error', async (error) => {
+                this.log('client.on(error)', error);
+            });
+            await this.client.start();
+            this.client.on('ready', () => {
+                this.log("Client has been initialized");
+                this.setAvailable();
+            });
+            this.client.on('close', ({ hasError, error }) => {
+                this.log("Client has been closed");
+                this.setUnavailable();
+            });
+            await this.registerClientListeners();
+            this.log('Client listeners have been registered');
+            await this.registerCapabilityListeners();
+            this.log('Capability listeners have been registered');
+            this.fixCapabilities();
+        }
+        catch (error) {
+            this.error(error);
+            console.log(error);
+        }
+    }
+    async onUninit() {
+        this.client?.stop();
     }
     async registerClientListeners() {
         if (!this.client) {
@@ -111,7 +129,7 @@ class RemoteDevice extends remote_1.Remote {
                 app: current_app
             }).catch(this.error);
         });
-        this.client.on('unpaired', async () => {
+        this.client.on('unpaired', async (error) => {
             await this.setUnavailable(this.homey.__('error.unpaired'));
         });
         this.client.on('secret', async () => {
@@ -189,6 +207,12 @@ class RemoteDevice extends remote_1.Remote {
         }
         else if (typeof capability.key_next !== 'undefined') {
             return this.client?.sendKeyMediaNext();
+        }
+        else if (typeof capability.key_channel_up !== 'undefined') {
+            return this.client?.sendKeyChannelUp();
+        }
+        else if (typeof capability.key_channel_down !== 'undefined') {
+            return this.client?.sendKeyChannelDown();
         }
         // else if (typeof capability.key_adjust !== 'undefined') {
         //     return this.sendKey('Adjust')
@@ -268,6 +292,8 @@ class RemoteDevice extends remote_1.Remote {
             "key_cursor_right",
             "key_cursor_down",
             "key_cursor_left",
+            "key_channel_up",
+            "key_channel_down",
             "key_back",
             "key_home",
             "key_confirm",
@@ -320,61 +346,67 @@ class RemoteDevice extends remote_1.Remote {
             }
         }
     }
-    async sendKey(key) {
+    async pressKey(key, direction = null) {
         if (key === 'key_stop') {
-            this.client?.sendKeyMediaStop();
+            this.client?.sendKeyMediaStop(direction);
         }
         else if (key === 'key_play') {
-            this.client?.sendKeyMediaPlay();
+            this.client?.sendKeyMediaPlay(direction);
         }
         else if (key === 'key_pause') {
-            this.client?.sendKeyMediaPause();
+            this.client?.sendKeyMediaPause(direction);
         }
         else if (key === 'key_rewind') {
-            this.client?.sendKeyMediaRewind();
+            this.client?.sendKeyMediaRewind(direction);
         }
         else if (key === 'key_fast_forward') {
-            this.client?.sendKeyMediaFastForward();
+            this.client?.sendKeyMediaFastForward(direction);
         }
         else if (key === 'key_source') {
-            this.client?.sendKeySource();
+            this.client?.sendKeySource(direction);
         }
         else if (key === 'key_watch_tv') {
-            this.client?.sendKeyTv();
+            this.client?.sendKeyTv(direction);
         }
         else if (key === 'key_confirm') {
-            this.client?.sendKeyDpadCenter();
+            this.client?.sendKeyDpadCenter(direction);
         }
         else if (key === 'key_previous') {
-            this.client?.sendKeyMediaStop();
+            this.client?.sendKeyMediaStop(direction);
         }
         else if (key === 'key_next') {
-            this.client?.sendKeyMediaNext();
+            this.client?.sendKeyMediaNext(direction);
+        }
+        else if (key === 'key_channel_up') {
+            this.client?.sendKeyChannelUp(direction);
+        }
+        else if (key === 'key_channel_down') {
+            this.client?.sendKeyChannelDown(direction);
         }
         else if (key === 'key_cursor_left') {
-            this.client?.sendKeyDpadLeft();
+            this.client?.sendKeyDpadLeft(direction);
         }
         else if (key === 'key_cursor_up') {
-            this.client?.sendKeyDpadUp();
+            this.client?.sendKeyDpadUp(direction);
         }
         else if (key === 'key_cursor_right') {
-            this.client?.sendKeyDpadRight();
+            this.client?.sendKeyDpadRight(direction);
         }
         else if (key === 'key_cursor_down') {
-            this.client?.sendKeyDpadDown();
+            this.client?.sendKeyDpadDown(direction);
         }
         else if (key === 'key_options') {
-            this.client?.sendKeyMenu();
+            this.client?.sendKeyMenu(direction);
         }
         else if (key === 'key_back') {
-            this.client?.sendKeyBack();
+            this.client?.sendKeyBack(direction);
         }
         else if (key === 'key_home') {
-            this.client?.sendKeyHome();
+            this.client?.sendKeyHome(direction);
         }
     }
-    async openApplication(app) {
-        this.client?.openApplication(app.url);
+    async openApplication(appLink) {
+        this.client?.openApplication(appLink);
     }
     async selectSource(source) {
         if (source === 'HDMI1') {
@@ -465,6 +497,14 @@ class RemoteDevice extends remote_1.Remote {
             {
                 key: 'key_cursor_down',
                 name: this.homey.__(`key.cursor_down`)
+            },
+            {
+                key: 'key_channel_up',
+                name: this.homey.__(`key.channel_up`)
+            },
+            {
+                key: 'key_channel_down',
+                name: this.homey.__(`key.channel_down`)
             },
             {
                 key: 'key_options',

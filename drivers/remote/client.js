@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Input = void 0;
-const androidtv_remote_1 = require("androidtv-remote");
+const androidtv_remote_1 = require("../../androidtv-remote");
 var Input;
 (function (Input) {
     Input[Input["HDMI1"] = 0] = "HDMI1";
@@ -21,16 +21,22 @@ class AndroidTVRemoteClient {
     remote_port;
     client_name;
     cert;
-    constructor(host, cert = {}, client_name = 'androidtv-remote', pairing_port = 6467, remote_port = 6466) {
+    constructor(host, cert = { key: undefined, cert: undefined }, client_name = 'androidtv-remote', pairing_port = 6467, remote_port = 6466, debug = false) {
         this.host = host;
         this.client_name = client_name;
         this.pairing_port = pairing_port;
         this.remote_port = remote_port;
         this.cert = cert;
-        this.initClient();
-    }
-    initClient() {
         this.client = new androidtv_remote_1.AndroidRemote(this.host, this.getOptions());
+        this.client.on('error', (error) => {
+            console.log('REMOTE CLIENT ERROR', error);
+        });
+        if (debug) {
+            this.client.on('log', (...args) => console.log('log', ...args));
+            this.client.on('log.debug', (...args) => console.log('debug', ...args));
+            this.client.on('log.info', (...args) => console.log('info', ...args));
+            this.client.on('log.error', (...args) => console.log('error', ...args));
+        }
     }
     on(event, callback) {
         this.client.on(event, callback);
@@ -39,30 +45,31 @@ class AndroidTVRemoteClient {
         return await this.client.start();
     }
     async sendCode(code) {
-        return await this.client.sendCode(code);
+        return this.client.sendCode(code);
     }
     async getCertificate() {
-        return await this.client.getCertificate();
+        return this.client.getCertificate();
     }
     getOptions() {
         return {
             pairing_port: this.pairing_port,
             remote_port: this.remote_port,
-            name: this.client_name,
-            cert: this.cert
+            service_name: this.client_name,
+            cert: this.cert,
+            timeout: 1000 * 60
         };
     }
     mute() {
         this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_MUTE, androidtv_remote_1.RemoteDirection.SHORT);
     }
-    volumeUp() {
-        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_VOLUME_UP, androidtv_remote_1.RemoteDirection.SHORT);
+    volumeUp(direction = null) {
+        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_VOLUME_UP, direction || androidtv_remote_1.RemoteDirection.SHORT);
     }
-    volumeDown() {
-        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_VOLUME_DOWN, androidtv_remote_1.RemoteDirection.SHORT);
+    volumeDown(direction = null) {
+        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_VOLUME_DOWN, direction || androidtv_remote_1.RemoteDirection.SHORT);
     }
-    sendKeySelect() {
-        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_BUTTON_SELECT, androidtv_remote_1.RemoteDirection.SHORT);
+    sendKeySelect(direction = null) {
+        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_BUTTON_SELECT, direction || androidtv_remote_1.RemoteDirection.SHORT);
     }
     setInput(input) {
         if (input === Input.HDMI1) {
@@ -96,56 +103,62 @@ class AndroidTVRemoteClient {
             throw new Error('Invalid HDMI input');
         }
     }
-    sendKeyTv() {
-        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_TV, androidtv_remote_1.RemoteDirection.SHORT);
+    sendKeyTv(direction = null) {
+        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_TV, direction || androidtv_remote_1.RemoteDirection.SHORT);
     }
-    sendKeySource() {
-        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_TV_INPUT, androidtv_remote_1.RemoteDirection.SHORT);
+    sendKeySource(direction = null) {
+        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_TV_INPUT, direction || androidtv_remote_1.RemoteDirection.SHORT);
     }
-    sendKeyMediaPlay() {
-        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_MEDIA_PLAY, androidtv_remote_1.RemoteDirection.SHORT);
+    sendKeyMediaPlay(direction = null) {
+        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_MEDIA_PLAY, direction || androidtv_remote_1.RemoteDirection.SHORT);
     }
-    sendKeyMediaPause() {
-        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_MEDIA_PAUSE, androidtv_remote_1.RemoteDirection.SHORT);
+    sendKeyMediaPause(direction = null) {
+        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_MEDIA_PAUSE, direction || androidtv_remote_1.RemoteDirection.SHORT);
     }
-    sendKeyMediaStop() {
-        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_MEDIA_STOP, androidtv_remote_1.RemoteDirection.SHORT);
+    sendKeyMediaStop(direction = null) {
+        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_MEDIA_STOP, direction || androidtv_remote_1.RemoteDirection.SHORT);
     }
-    sendKeyMediaNext() {
-        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_MEDIA_NEXT, androidtv_remote_1.RemoteDirection.SHORT);
+    sendKeyMediaNext(direction = null) {
+        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_MEDIA_NEXT, direction || androidtv_remote_1.RemoteDirection.SHORT);
     }
-    sendKeyMediaPrevious() {
-        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_MEDIA_PREVIOUS, androidtv_remote_1.RemoteDirection.SHORT);
+    sendKeyChannelUp(direction = null) {
+        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_CHANNEL_UP, direction || androidtv_remote_1.RemoteDirection.SHORT);
     }
-    sendKeyMediaRewind() {
-        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_MEDIA_REWIND, androidtv_remote_1.RemoteDirection.SHORT);
+    sendKeyChannelDown(direction = null) {
+        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_CHANNEL_DOWN, direction || androidtv_remote_1.RemoteDirection.SHORT);
     }
-    sendKeyMediaFastForward() {
-        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_MEDIA_FAST_FORWARD, androidtv_remote_1.RemoteDirection.SHORT);
+    sendKeyMediaPrevious(direction = null) {
+        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_MEDIA_PREVIOUS, direction || androidtv_remote_1.RemoteDirection.SHORT);
     }
-    sendKeyDpadUp() {
-        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_DPAD_UP, androidtv_remote_1.RemoteDirection.SHORT);
+    sendKeyMediaRewind(direction = null) {
+        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_MEDIA_REWIND, direction || androidtv_remote_1.RemoteDirection.SHORT);
     }
-    sendKeyDpadDown() {
-        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_DPAD_DOWN, androidtv_remote_1.RemoteDirection.SHORT);
+    sendKeyMediaFastForward(direction = null) {
+        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_MEDIA_FAST_FORWARD, direction || androidtv_remote_1.RemoteDirection.SHORT);
     }
-    sendKeyDpadLeft() {
-        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_DPAD_LEFT, androidtv_remote_1.RemoteDirection.SHORT);
+    sendKeyDpadUp(direction = null) {
+        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_DPAD_UP, direction || androidtv_remote_1.RemoteDirection.SHORT);
     }
-    sendKeyDpadRight() {
-        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_DPAD_RIGHT, androidtv_remote_1.RemoteDirection.SHORT);
+    sendKeyDpadDown(direction = null) {
+        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_DPAD_DOWN, direction || androidtv_remote_1.RemoteDirection.SHORT);
     }
-    sendKeyDpadCenter() {
-        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_DPAD_CENTER, androidtv_remote_1.RemoteDirection.SHORT);
+    sendKeyDpadLeft(direction = null) {
+        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_DPAD_LEFT, direction || androidtv_remote_1.RemoteDirection.SHORT);
     }
-    sendKeyHome() {
-        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_HOME, androidtv_remote_1.RemoteDirection.SHORT);
+    sendKeyDpadRight(direction = null) {
+        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_DPAD_RIGHT, direction || androidtv_remote_1.RemoteDirection.SHORT);
     }
-    sendKeyBack() {
-        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_BACK, androidtv_remote_1.RemoteDirection.SHORT);
+    sendKeyDpadCenter(direction = null) {
+        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_DPAD_CENTER, direction || androidtv_remote_1.RemoteDirection.SHORT);
     }
-    sendKeyMenu() {
-        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_MENU, androidtv_remote_1.RemoteDirection.SHORT);
+    sendKeyHome(direction = null) {
+        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_HOME, direction || androidtv_remote_1.RemoteDirection.SHORT);
+    }
+    sendKeyBack(direction = null) {
+        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_BACK, direction || androidtv_remote_1.RemoteDirection.SHORT);
+    }
+    sendKeyMenu(direction = null) {
+        this.client.sendKey(androidtv_remote_1.RemoteKeyCode.KEYCODE_MENU, direction || androidtv_remote_1.RemoteDirection.SHORT);
     }
     openApplication(application) {
         this.client.sendAppLink(application);
